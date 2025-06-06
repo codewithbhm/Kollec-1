@@ -31,6 +31,25 @@ function getMockData<T>(query: string): T[] {
   const queryLower = query.toLowerCase()
 
   if (queryLower.includes("articles")) {
+    // For sitemap query that only needs id and updated_at
+    if (queryLower.includes("select id, updated_at")) {
+      return [
+        {
+          id: "1",
+          updated_at: new Date("2025-01-06").toISOString(),
+        },
+        {
+          id: "2",
+          updated_at: new Date("2025-01-05").toISOString(),
+        },
+        {
+          id: "3",
+          updated_at: new Date("2025-01-04").toISOString(),
+        },
+      ] as T[]
+    }
+
+    // Full article data
     return [
       {
         id: "1",
@@ -44,6 +63,7 @@ function getMockData<T>(query: string): T[] {
         author_name: "Admin User",
         views: 150,
         createdAt: new Date("2025-01-06"),
+        updated_at: new Date("2025-01-06").toISOString(),
         published: true,
       },
       {
@@ -58,6 +78,7 @@ function getMockData<T>(query: string): T[] {
         author_name: "Admin User",
         views: 89,
         createdAt: new Date("2025-01-05"),
+        updated_at: new Date("2025-01-05").toISOString(),
         published: true,
       },
       {
@@ -72,6 +93,7 @@ function getMockData<T>(query: string): T[] {
         author_name: "Admin User",
         views: 234,
         createdAt: new Date("2025-01-04"),
+        updated_at: new Date("2025-01-04").toISOString(),
         published: true,
       },
     ] as T[]
