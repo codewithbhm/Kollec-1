@@ -219,7 +219,7 @@ export default function NotFound() {
                     className="group border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-300"
                   >
                     <Route className="w-5 h-5 mr-2 group-hover:animate-pulse" />
-                    Bütün Marşrutlar
+                    Mövcud Səhifələr
                   </Button>
                 </RoutesModal>
 
@@ -282,6 +282,19 @@ export default function NotFound() {
         </div>
 
         {/* Help Text */}
+        <div
+          className="mt-6 text-sm text-gray-500 dark:text-gray-400 animate-fade-in-up"
+          style={{ animationDelay: "1.1s" }}
+        >
+          <p>
+            Bu demo tətbiqində yalnız bir neçə səhifə mövcuddur. "Mövcud Səhifələr" düyməsini klikləyərək onları görə
+            bilərsiniz.
+          </p>
+          <p className="mt-1">
+            (Only a few pages are implemented in this demo application. Click the "Available Pages" button to see them.)
+          </p>
+        </div>
+
         <div className="mt-12 animate-fade-in-up" style={{ animationDelay: "1.2s" }}>
           <p className="text-gray-500 dark:text-gray-400">
             Hələ də kömək lazımdır?{" "}

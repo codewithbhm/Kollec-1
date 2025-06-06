@@ -73,12 +73,11 @@ export function RoutesModal({ children }: RoutesModalProps) {
     { value: "auth", label: "Giriş", labelEn: "Auth" },
   ]
 
+  // Update the handleRouteClick function to use Next.js router
   const handleRouteClick = (path: string) => {
     setOpen(false)
-    // Small delay to allow modal to close before navigation
-    setTimeout(() => {
-      window.location.href = path
-    }, 100)
+    // Use window.location for more reliable navigation
+    window.location.href = path
   }
 
   const RouteIcon = ({ iconName }: { iconName?: string }) => {
