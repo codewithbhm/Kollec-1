@@ -6,7 +6,8 @@ import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Home, Search, BookOpen, GraduationCap, ArrowLeft, RefreshCw, MapPin, ChevronRight } from "lucide-react"
+import { RoutesModal } from "@/components/ui/routes-modal"
+import { Home, Search, BookOpen, GraduationCap, ArrowLeft, RefreshCw, MapPin, ChevronRight, Route } from "lucide-react"
 
 export default function NotFound() {
   const [mounted, setMounted] = useState(false)
@@ -209,6 +210,19 @@ export default function NotFound() {
                     Ana Səhifəyə Qayıt
                   </Link>
                 </Button>
+
+                {/* Routes Button */}
+                <RoutesModal>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="group border-blue-200 dark:border-blue-800 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all duration-300"
+                  >
+                    <Route className="w-5 h-5 mr-2 group-hover:animate-pulse" />
+                    Bütün Marşrutlar
+                  </Button>
+                </RoutesModal>
+
                 <Button
                   variant="outline"
                   size="lg"
