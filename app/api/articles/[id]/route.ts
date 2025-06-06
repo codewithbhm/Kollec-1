@@ -1,10 +1,13 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { executeQuery } from "@/lib/db"
 import type { Article } from "@/lib/types"
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }, // Fixed: params is a regular object
+) {
   try {
-    const { id } = await params
+    const { id } = params
 
     const articles = await executeQuery<Article>(`SELECT * FROM articles WHERE id = ? AND published = true`, [id])
 

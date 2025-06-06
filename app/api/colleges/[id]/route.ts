@@ -1,12 +1,15 @@
-import { type NextRequest, NextResponse } from "next/server"
+import { NextResponse } from "next/server"
 import { executeQuery } from "@/lib/db"
 import type { College } from "@/lib/types"
 
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(
+  request: Request,
+  { params }: { params: { id: string } }, // Fixed: params is a regular object
+) {
   try {
-    const { id } = await params
+    const { id } = params
 
-    const colleges = await executeQuery<College>(`SELECT * FROM colleges WHERE id = ? AND is_active = true`, [id])
+    const colleges = await executeQuery<College>(`SELECT * FROM colleges WHERE id = ?`, [id])
 
     if (colleges.length === 0) {
       return NextResponse.json({ error: "College not found" }, { status: 404 })

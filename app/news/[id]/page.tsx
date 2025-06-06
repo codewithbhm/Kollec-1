@@ -12,27 +12,22 @@ import { notFound } from "next/navigation"
 import type { Article } from "@/lib/types"
 
 interface ArticlePageProps {
-  params: Promise<{ id: string }>
+  params: { id: string } // Fixed: params is a regular object, not a Promise
 }
 
 export default function ArticlePage({ params }: ArticlePageProps) {
   const [article, setArticle] = useState<Article | null>(null)
   const [loading, setLoading] = useState(true)
-  const [resolvedParams, setResolvedParams] = useState<{ id: string } | null>(null)
+  const { id } = params // Directly access the id from params
 
   useEffect(() => {
-    params.then(setResolvedParams)
-  }, [params])
+    // Fetch article data when component mounts
+    fetchArticle(id)
+  }, [id])
 
-  useEffect(() => {
-    if (resolvedParams?.id) {
-      fetchArticle(resolvedParams.id)
-    }
-  }, [resolvedParams])
-
-  const fetchArticle = async (id: string) => {
+  const fetchArticle = async (articleId: string) => {
     try {
-      const response = await fetch(`/api/articles/${id}`)
+      const response = await fetch(`/api/articles/${articleId}`)
       if (response.ok) {
         const data = await response.json()
         setArticle(data)
