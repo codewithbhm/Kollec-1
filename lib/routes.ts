@@ -9,7 +9,7 @@ export interface RouteItem {
   isPublic: boolean
 }
 
-// Update the routes to only include the ones that actually exist in the application
+// Update the routes to include the login page
 export const applicationRoutes: RouteItem[] = [
   // Main Routes
   {
@@ -50,6 +50,16 @@ export const applicationRoutes: RouteItem[] = [
     descriptionAz: "Bizimlə əlaqə saxlayın",
     category: "main",
     icon: "Phone",
+    isPublic: true,
+  },
+  {
+    path: "/login",
+    name: "Login",
+    nameAz: "Giriş",
+    description: "Login to your account",
+    descriptionAz: "Hesabınıza daxil olun",
+    category: "auth",
+    icon: "LogIn",
     isPublic: true,
   },
 ]

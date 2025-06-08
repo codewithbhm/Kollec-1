@@ -11,15 +11,53 @@ interface UserWithPassword {
   password_hash: string
 }
 
+export async function GET() {
+  return NextResponse.json({
+    message: "Login endpoint is available. Use POST method to authenticate.",
+    method: "POST",
+    endpoint: "/api/auth/login",
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, password } = await request.json()
+    const body = await request.json()
+    const { email, password } = body
 
     if (!email || !password) {
       return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
-    // Find user
+    // Check if we have database connection
+    if (!process.env.DATABASE_URL) {
+      // Return mock authentication for demo purposes
+      if (email === "demo@kollec.az" && password === "demo123") {
+        const mockUser = {
+          id: "demo-user-id",
+          email: "demo@kollec.az",
+          name: "Demo User",
+          phone: "+994 77 273 01 01",
+          role: "student" as const,
+        }
+
+        const token = generateToken(mockUser)
+
+        return NextResponse.json({
+          user: mockUser,
+          token,
+          message: "Demo login successful",
+        })
+      } else {
+        return NextResponse.json(
+          {
+            error: "Invalid credentials. For demo, use: demo@kollec.az / demo123",
+          },
+          { status: 401 },
+        )
+      }
+    }
+
+    // Find user in database
     const users = await executeQuery<UserWithPassword>(
       "SELECT id, email, name, phone, role, password_hash FROM users WHERE email = $1",
       [email],
@@ -58,6 +96,18 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Login error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+
+    // Return a more specific error message
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: "Invalid JSON in request body" }, { status: 400 })
+    }
+
+    return NextResponse.json(
+      {
+        error: "Authentication service temporarily unavailable",
+        details: process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 },
+    )
   }
 }

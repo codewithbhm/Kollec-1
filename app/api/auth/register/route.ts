@@ -3,13 +3,60 @@ import { executeQuery } from "@/lib/db"
 import { hashPassword, generateToken } from "@/lib/auth"
 import type { User } from "@/lib/types"
 
+export async function GET() {
+  return NextResponse.json({
+    message: "Registration endpoint is available. Use POST method to register.",
+    method: "POST",
+    endpoint: "/api/auth/register",
+  })
+}
+
 export async function POST(request: NextRequest) {
   try {
-    const { email, name, password, phone } = await request.json()
+    const body = await request.json()
+    const { email, name, password, phone } = body
 
     // Validate input
     if (!email || !name || !password) {
       return NextResponse.json({ error: "Email, name, and password are required" }, { status: 400 })
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: "Invalid email format" }, { status: 400 })
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return NextResponse.json({ error: "Password must be at least 6 characters long" }, { status: 400 })
+    }
+
+    // Check if we have database connection
+    if (!process.env.DATABASE_URL) {
+      // Return mock registration for demo purposes
+      const mockUser = {
+        id: `demo-user-${Date.now()}`,
+        email,
+        name,
+        phone: phone || null,
+        role: "student" as const,
+        createdAt: new Date(),
+      }
+
+      const token = generateToken(mockUser)
+
+      return NextResponse.json({
+        user: {
+          id: mockUser.id,
+          email: mockUser.email,
+          name: mockUser.name,
+          phone: mockUser.phone,
+          role: mockUser.role,
+        },
+        token,
+        message: "Demo registration successful",
+      })
     }
 
     // Check if user already exists
@@ -43,6 +90,18 @@ export async function POST(request: NextRequest) {
     })
   } catch (error) {
     console.error("Registration error:", error)
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 })
+
+    // Return a more specific error message
+    if (error instanceof SyntaxError) {
+      return NextResponse.json({ error: "Invalid JSON in request body" }, { status: 400 })
+    }
+
+    return NextResponse.json(
+      {
+        error: "Registration service temporarily unavailable",
+        details: process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
+      { status: 500 },
+    )
   }
 }
